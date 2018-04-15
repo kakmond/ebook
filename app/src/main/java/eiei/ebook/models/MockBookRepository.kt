@@ -7,18 +7,15 @@ import android.util.Log
  */
 class MockBookRepository : BookRepository() {
 
-    val bookList = ArrayList<Book>()
-
     override fun getBooks(): ArrayList<Book> {
         return bookList
     }
 
     override fun loadAllBooks() {
         bookList.clear()
-        bookList.add(Book(1,"How to be a programmer",555.0))
+        bookList.add(Book(1,"How to be a Programmer",555.0))
         bookList.add(Book(1,"How to be a Varit",123.0))
         bookList.add(Book(1,"How to be a Assavavisitchai",999.0))
-        Log.d("FUCK","ADDED")
         setChanged()
         notifyObservers()
     }
