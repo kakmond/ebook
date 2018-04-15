@@ -1,7 +1,14 @@
 package eiei.ebook.presenter
 
+import android.R
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
+import eiei.ebook.MainActivity
+import eiei.ebook.R.id.search_spinner
 import eiei.ebook.models.BookRepository
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 /**
@@ -13,6 +20,35 @@ class BookPresenter(val view: BookView,
     override fun update(p0: Observable?, p1: Any?) {
         if (p0 == repository)
             view.setBookList(repository.getBooks())
+    }
+
+    fun searchTitle(title: String) {
+        repository.searchTitle(title)
+    }
+
+    fun searchYear(years: String) {
+        try {
+            val temp_year = Integer.parseInt(years)
+            repository.searchYear(temp_year)
+        } catch (e: NumberFormatException) {
+            //ERROR!
+        }
+    }
+
+    fun sortTitle_des() {
+        repository.sortTitle_des()
+    }
+
+    fun sortTitle_asc() {
+        repository.sortTitle_asc()
+    }
+
+    fun sortYear_des() {
+        repository.sortYear_des()
+    }
+
+    fun sortYear_asc() {
+        repository.sortYear_asc()
     }
 
     fun start() {

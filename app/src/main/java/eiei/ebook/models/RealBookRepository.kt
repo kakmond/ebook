@@ -17,7 +17,7 @@ class RealBookRepository : BookRepository() {
     }
 
     fun updateBookJSON(json: String) {
-        bookList.clear()
+        allbooks.clear()
         val arr = JSONArray(json)
         for (i in 0..(arr.length() - 1)) {
             val obj = arr.getJSONObject(i)
@@ -26,8 +26,9 @@ class RealBookRepository : BookRepository() {
             val price: Double = obj.getDouble("price")
             val publicationYear: Int = obj.getInt("pub_year")
             val imageURL: String = obj.getString("img_url")
-            bookList.add(Book(id, title, price, publicationYear, imageURL))
+            allbooks.add(Book(id, title, price, publicationYear, imageURL))
         }
+        bookList = allbooks
         setChanged()
         notifyObservers()
     }
