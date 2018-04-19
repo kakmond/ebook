@@ -2,11 +2,13 @@ package eiei.ebook.presenter
 
 import android.R
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import eiei.ebook.MainActivity
-import eiei.ebook.R.id.search_spinner
+import eiei.ebook.R.id.orderby_spinner
+import eiei.ebook.R.id.sort_spinner
 import eiei.ebook.models.BookRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -17,22 +19,42 @@ import java.util.*
 class BookPresenter(val view: BookView,
                     val repository: BookRepository) : Observer {
 
+
     override fun update(p0: Observable?, p1: Any?) {
         if (p0 == repository)
             view.setBookList(repository.getBooks())
     }
 
-    fun searchTitle(title: String) {
-        repository.searchTitle(title)
+//    fun searchTitle(title: String) {
+//        repository.searchTitle(title)
+//    }
+//
+//    fun searchYear(years: String) {
+//        try {
+//            val temp_year = Integer.parseInt(years)
+//            repository.searchYear(temp_year)
+//        } catch (e: NumberFormatException) {
+//            //ERROR!
+//        }
+//    }
+
+    fun searchButtonClicked(view: View) {
+
     }
 
-    fun searchYear(years: String) {
-        try {
-            val temp_year = Integer.parseInt(years)
-            repository.searchYear(temp_year)
-        } catch (e: NumberFormatException) {
-            //ERROR!
-        }
+    fun search(title: String, years: String) {
+        if (years.isEmpty())
+            repository.searchTitle(title)
+        else
+            try {
+                val temp_year = Integer.parseInt(years)
+                if (title.isEmpty())
+                    repository.searchYear(temp_year)
+                else
+                    repository.search(title, temp_year)
+            } catch (e: NumberFormatException) {
+                //ERROR!
+            }
     }
 
     fun sortTitle_des() {

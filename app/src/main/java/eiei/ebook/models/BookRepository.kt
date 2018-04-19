@@ -1,5 +1,6 @@
 package eiei.ebook.models
 
+import android.util.Log
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -15,13 +16,25 @@ abstract class BookRepository : Observable() {
     abstract fun getBooks(): ArrayList<Book>
 
     fun searchYear(years: Int) {
+        Log.d("Test","searchYears is calling")
         bookList = ArrayList(allbooks.filter { book -> book.publicationYear == years })
         setChanged()
         notifyObservers()
     }
 
     fun searchTitle(title: String) {
+        Log.d("Test","searchTitle is calling")
         bookList = ArrayList(allbooks.filter { book -> book.title.contains(title) })
+        setChanged()
+        notifyObservers()
+    }
+
+    fun search(title: String, years: Int) {
+        Log.d("Test","search is calling")
+        var book_temp: ArrayList<Book>
+        book_temp = ArrayList(allbooks.filter { book -> book.title.contains(title) })
+        book_temp = ArrayList(book_temp.filter { book -> book.publicationYear == years })
+        this.bookList = book_temp
         setChanged()
         notifyObservers()
     }
