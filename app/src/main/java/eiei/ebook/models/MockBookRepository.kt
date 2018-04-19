@@ -19,7 +19,6 @@ class MockBookRepository : BookRepository() {
         bookList = allbooks
         setChanged()
         notifyObservers()
-
     }
 
 }

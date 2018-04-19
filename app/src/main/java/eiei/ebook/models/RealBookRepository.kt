@@ -48,6 +48,5 @@ class RealBookRepository : BookRepository() {
             if (result != null)
                 updateBookJSON(result)
         }
-
     }
 }

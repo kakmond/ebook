@@ -25,23 +25,6 @@ class BookPresenter(val view: BookView,
             view.setBookList(repository.getBooks())
     }
 
-//    fun searchTitle(title: String) {
-//        repository.searchTitle(title)
-//    }
-//
-//    fun searchYear(years: String) {
-//        try {
-//            val temp_year = Integer.parseInt(years)
-//            repository.searchYear(temp_year)
-//        } catch (e: NumberFormatException) {
-//            //ERROR!
-//        }
-//    }
-
-    fun searchButtonClicked(view: View) {
-
-    }
-
     fun search(title: String, years: String) {
         if (years.isEmpty())
             repository.searchTitle(title)
