@@ -1,7 +1,10 @@
 package eiei.ebook
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.support.v7.app.ActionBar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -9,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import eiei.ebook.models.Book
 import eiei.ebook.models.RealBookRepository
+import eiei.ebook.models.User
 import eiei.ebook.presenter.BookPresenter
 import eiei.ebook.presenter.BookView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,13 +21,15 @@ class MainActivity : AppCompatActivity(), BookView {
 
     lateinit var presenter: BookPresenter
     lateinit var real: RealBookRepository
-    // lateinit var mock: MockBookRepository;
 
+    val user: User = User("Mond")
+    // lateinit var mock: MockBookRepository;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        getSupportActionBar()?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar()?.setCustomView(R.layout.menu_layout);
         this.initialSpinner()
         // mock = MockBookRepository()
         real = RealBookRepository()
@@ -95,6 +101,7 @@ class MainActivity : AppCompatActivity(), BookView {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 sortHandle()
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //do nothing
             }
@@ -115,6 +122,12 @@ class MainActivity : AppCompatActivity(), BookView {
         if (sort_spinner.selectedItem.toString().equals("Years")
                 && orderby_spinner.selectedItem.toString().equals("Descending"))
             presenter.sortYear_des()
+    }
+
+    fun userButtonClicked(view: View) {
+        val intent = Intent(this, UserActivity::class.java)
+        intent.putExtra("User",user)
+        startActivity(intent)
     }
 
 
