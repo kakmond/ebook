@@ -26,8 +26,9 @@ class BookPresenter(val view: BookView,
     }
 
     fun search(title: String, years: String) {
-        if (years.isEmpty())
+        if (years.isEmpty()){
             repository.searchTitle(title)
+        }
         else
             try {
                 val temp_year = Integer.parseInt(years)

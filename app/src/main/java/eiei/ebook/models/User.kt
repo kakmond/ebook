@@ -2,6 +2,7 @@ package eiei.ebook.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.io.Serializable
 
 /**
  * Created by Mond on 30/3/2561.
@@ -9,14 +10,24 @@ import android.os.Parcelable
 
 class User(val name: String) : Parcelable {
 
-    private var balance: Double = 0.0
+    private var balance: Double = 10.0
 
-    constructor(parcel: Parcel) : this(parcel.readString()) {
+    constructor(parcel: Parcel) : this(
+            parcel.readString()) {
         balance = parcel.readDouble()
     }
 
-    override fun toString(): String {
-        return "${name})"
+    fun getBalance(): Double {
+        return balance
+    }
+
+    fun addMoney(money: Double) {
+        this.balance += money
+    }
+
+    fun checkout(books: ArrayList<Book>) {
+        for (book in books)
+            this.balance -= book.price
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -37,5 +48,6 @@ class User(val name: String) : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
 
 }

@@ -14,6 +14,11 @@ class MockUserRepository : UserRepository() {
     override fun loadAllUsers() {
         userList.add(User("Mond"))
         userList.add(User("Mick"))
+        userList.add(User("Jim"))
+        userList.add(User("Kong"))
+        userList.add(User("Mai"))
+        userList.add(User("Fasai"))
+
         setChanged()
         notifyObservers()
     }

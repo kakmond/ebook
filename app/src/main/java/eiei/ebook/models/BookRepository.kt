@@ -16,23 +16,20 @@ abstract class BookRepository : Observable() {
     abstract fun getBooks(): ArrayList<Book>
 
     fun searchYear(years: Int) {
-        Log.d("Test","searchYears is calling")
         bookList = ArrayList(allbooks.filter { book -> book.publicationYear == years })
         setChanged()
         notifyObservers()
     }
 
     fun searchTitle(title: String) {
-        Log.d("Test","searchTitle is calling")
-        bookList = ArrayList(allbooks.filter { book -> book.title.contains(title) })
+        bookList = ArrayList(allbooks.filter { book -> book.title.toLowerCase().contains(title.toLowerCase()) })
         setChanged()
         notifyObservers()
     }
 
     fun search(title: String, years: Int) {
-        Log.d("Test","search is calling")
         var book_temp: ArrayList<Book>
-        book_temp = ArrayList(allbooks.filter { book -> book.title.contains(title) })
+        book_temp = ArrayList(allbooks.filter { book -> book.title.toLowerCase().contains(title.toLowerCase()) })
         book_temp = ArrayList(book_temp.filter { book -> book.publicationYear == years })
         this.bookList = book_temp
         setChanged()
@@ -41,7 +38,7 @@ abstract class BookRepository : Observable() {
 
     fun sortTitle_des() {
         Collections.sort(bookList) { bookList, bookList2 ->
-            bookList2.title.compareTo(bookList.title)
+            bookList2.title.toLowerCase().compareTo(bookList.title.toLowerCase())
         }
         setChanged()
         notifyObservers()
@@ -49,7 +46,7 @@ abstract class BookRepository : Observable() {
 
     fun sortTitle_asc() {
         Collections.sort(bookList) { bookList, bookList2 ->
-            bookList.title.compareTo(bookList2.title)
+            bookList.title.toLowerCase().compareTo(bookList2.title.toLowerCase())
         }
         setChanged()
         notifyObservers()

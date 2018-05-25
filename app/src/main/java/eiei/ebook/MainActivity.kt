@@ -1,39 +1,87 @@
 package eiei.ebook
 
+import android.app.Activity
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import eiei.ebook.adapter.BookAdapter
 import eiei.ebook.models.Book
 import eiei.ebook.models.RealBookRepository
 import eiei.ebook.models.User
 import eiei.ebook.presenter.BookPresenter
 import eiei.ebook.presenter.BookView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.menu_layout.*
+import android.widget.TextView
+import android.R.attr.data
+import android.widget.Toast
+
 
 class MainActivity : AppCompatActivity(), BookView {
 
     lateinit var presenter: BookPresenter
     lateinit var real: RealBookRepository
 
-    val user: User = User("Mond")
+    private var isStarted: Boolean = false
+
+    private lateinit var clickedHandler: ClickHandler
+
+    private val INPUT_REQUEST_CODE = 100
+
+    private var cart: ArrayList<Book> = ArrayList()
+
+    var user: User = User("Mond")
     // lateinit var mock: MockBookRepository;
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == INPUT_REQUEST_CODE)
+            if (resultCode == Activity.RESULT_OK)
+                if (data != null) {
+                    this.cart = data.getParcelableArrayListExtra("Cart")
+                    this.user = data.getParcelableExtra("User")
+                }
+        balance.text = user.getBalance().toString()
+        isStarted = false
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         getSupportActionBar()?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar()?.setCustomView(R.layout.menu_layout);
+        balance.text = user.getBalance().toString()
+        name.text = user.name
         this.initialSpinner()
         // mock = MockBookRepository()
         real = RealBookRepository()
         presenter = BookPresenter(this, real)
+        clickedHandler = ClickedHandler()
+
+        name.setOnClickListener(View.OnClickListener {
+            userButtonClicked(it)
+        })
+        balance.setOnClickListener(View.OnClickListener {
+            userButtonClicked(it)
+        })
+
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        book_list.layoutManager = layoutManager
         presenter.start()
     }
 
@@ -84,8 +132,10 @@ class MainActivity : AppCompatActivity(), BookView {
                 if (position == 0) {
                     presenter.search(title_search.text.toString(), year_search.text.toString())
                     orderby_spinner.isEnabled = false
-                } else
+                } else {
+                    orderby_spinner.isEnabled = true
                     sortHandle()
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -125,15 +175,42 @@ class MainActivity : AppCompatActivity(), BookView {
     }
 
     fun userButtonClicked(view: View) {
-        val intent = Intent(this, UserActivity::class.java)
-        intent.putExtra("User",user)
-        startActivity(intent)
+        if (isStarted == false) {
+            val intent = Intent(this, UserActivity::class.java)
+            intent.putExtra("User", user)
+            intent.putParcelableArrayListExtra("Cart", cart)
+            startActivityForResult(intent, INPUT_REQUEST_CODE)
+        }
+        isStarted = true
     }
 
 
     override fun setBookList(books: ArrayList<Book>) {
-        var adapter = ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, books)
+        var adapter = BookAdapter(books, user, clickedHandler)
         book_list.adapter = adapter
+    }
+
+
+    inner class ClickedHandler : ClickHandler {
+
+        val alertDialog = AlertDialog.Builder(
+                this@MainActivity).create()
+
+        init {
+            alertDialog.setTitle("Are you sure?");
+        }
+
+        override fun onClick(post: Book) {
+            alertDialog.setButton(Dialog.BUTTON_POSITIVE, "ADD", DialogInterface.OnClickListener
+            { dialog, which ->
+                cart.add(post)
+                Toast.makeText(this@MainActivity, "Added to your cart.", Toast.LENGTH_LONG).show()
+            })
+            alertDialog.setButton(Dialog.BUTTON_NEGATIVE, "CANCEL", DialogInterface.OnClickListener
+            { dialog, which -> alertDialog.dismiss() })
+            alertDialog.setMessage(post.toString());
+            alertDialog.show();
+        }
     }
 
 }
